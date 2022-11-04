@@ -1,14 +1,15 @@
 const URL = 'https://api.xpensify.app/api/v1/invoices';
-const API_KEY = 'CHANGE_WITH_YOUR_ACCOUNT_KEY';
 
 const invoicesCache = {};
 
 const buildHash_ = (filters) =>
-  Object.keys(filters).map((key) => `${key.id}=${values[key.id]}`).join('|');
+  Object.entries(filters)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('|');
 
 const buildUrlWithQueryParams_ = (url, params) => {
-  const query = Object.keys(params)
-      .map((key) => key + '=' + params[key])
+  const query = Object.entries(params)
+      .map(([key, value]) => `${key}=${value}`)
       .join('&');
 
   return `${url}?${query}`;
@@ -16,7 +17,7 @@ const buildUrlWithQueryParams_ = (url, params) => {
 
 const deepCopyObject_ = (obj) => JSON.parse(JSON.stringify(obj));
 
-const fetchInvoices = (filters) => { // eslint-disable-line
+function fetchInvoices(apiKey, filters) { // eslint-disable-line
   const filtersHash = buildHash_(filters);
   if (invoicesCache[filtersHash]) {
     return invoicesCache[filtersHash];
@@ -25,8 +26,9 @@ const fetchInvoices = (filters) => { // eslint-disable-line
   const httpParams = {
     'method': 'GET',
     'headers': {
-      'Authorization': 'Bearer ' + API_KEY,
+      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
     },
     'muteHttpExceptions': true,
   };
@@ -45,4 +47,23 @@ const fetchInvoices = (filters) => { // eslint-disable-line
 
   invoicesCache[filtersHash] = result.flat();
   return invoicesCache[filtersHash];
+};
+
+function clearFilters(sheetName, filtersPositions) { // eslint-disable-line
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  Object.entries(filtersPositions)
+      .forEach(([_, value]) => sheet.getRange(value).clearContent());
+};
+
+function getFilters(sheetName, filtersPositions) { // eslint-disable-line
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+
+  return Object.keys(filtersPositions)
+      .reduce((acc, key) => {
+        const value = sheet.getRange(filtersPositions[key]).getValue();
+        if (value) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
 };
