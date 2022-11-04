@@ -1,0 +1,22 @@
+{
+    "env": {
+        "node": true,
+        "googleappsscript/googleappsscript": true
+    },
+    "extends": [
+        "google"
+    ],
+    "plugins": [
+        "googleappsscript"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "rules": {
+        "max-len": [
+            "error",
+            { "code": 100 }
+        ]
+    }
+}
