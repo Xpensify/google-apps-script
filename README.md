@@ -1,4 +1,4 @@
-# Xpensify + Google Apps Script
+# Xtract + Google Apps Script
 
 This repo contains the code that powers the Xtract API connector library that you can use directly from Google Apps Script.
 If you don't want to use the library you can copy and modify the code in this repo as you need.

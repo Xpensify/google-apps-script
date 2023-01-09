@@ -1,4 +1,4 @@
-const URL = 'https://api.xpensify.app/api/v1/invoices';
+const URL = 'https://api.xtract.app/api/v1/invoices';
 
 const invoicesCache = {};
 
